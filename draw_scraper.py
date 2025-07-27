@@ -14,6 +14,7 @@ def get_10_numbers(date_str: str) -> list[str] | None:
         if resp.status_code != 200:
             print(f"❌ Status {resp.status_code} untuk {date_str}")
             return None
+
         soup = BeautifulSoup(resp.text, "html.parser")
         ids = ["1stPz", "2ndPz", "3rdPz", "SpPz1", "SpPz2", "SpPz3", "SpPz4", "SpPz5", "SpPz6", "SpPz7"]
         numbers = []
@@ -22,20 +23,32 @@ def get_10_numbers(date_str: str) -> list[str] | None:
             num = tag.text.strip() if tag else ""
             if num.isdigit() and len(num) == 4:
                 numbers.append(num)
+
         if len(numbers) == 10:
+            print(f"✅ {date_str} - berjaya dapat 10 nombor")
             return numbers
-        print(f"❌ Gagal lengkap scrape {date_str}, dapat {len(numbers)} nombor")
+        else:
+            print(f"❌ {date_str} - hanya dapat {len(numbers)} nombor")
+            print(resp.text[:500])  # Cetak sebahagian HTML untuk debug
+
     except Exception as e:
-        print(f"❌ Ralat: {e}")
+        print(f"❌ Ralat untuk {date_str}: {e}")
     return None
 
-def generate_date_list(n_days=200):
+def generate_date_list(n_days=30):
     today = datetime.today()
-    return [(today - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(n_days)]
+    dates = []
+    for i in range(n_days):
+        d = today - timedelta(days=i)
+        if d.weekday() in [0, 2, 5, 6]:  # Isnin, Rabu, Sabtu, Ahad
+            dates.append(d.strftime("%Y-%m-%d"))
+    return dates
 
-def update_draws(n_days=200):
+def update_draws(n_days=30):
     dates = generate_date_list(n_days)
     all_draws = []
+
+    print(f"\n📅 Memulakan scrape untuk {len(dates)} hari...\n")
 
     for d in dates:
         nums = get_10_numbers(d)
