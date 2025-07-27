@@ -41,12 +41,12 @@ def _hybrid_base(draws, recent_n=30):
     combined = []
     for pos in range(4):
         cnt = Counter(f[pos] + p[pos])
-        combined.append([d for d,_ in cnt.most_common(5)])
+        combined.append([d for d, _ in cnt.most_common(5)])
     return combined
 
 def _break_base():
     result = []
-    for i in range(1,5):
+    for i in range(1, 5):
         path = f"data/digit_rank_p{i}.txt"
         if not os.path.exists(path):
             raise FileNotFoundError(f"{path} tidak wujud")
@@ -65,7 +65,7 @@ def _hitfq_base(draws, recent_n=30):
     base = []
     for c in counters:
         ranked = sorted(c.items(), key=lambda x: (-x[1], int(x[0])))
-        base.append([d for d,_ in ranked[:5]])
+        base.append([d for d, _ in ranked[:5]])
     return base
 
 def _smartpattern_base(draws):
@@ -80,37 +80,37 @@ def _smartpattern_base(draws):
         cnt = Counter()
         for b in bases:
             cnt.update(b[pos])
-        result.append([d for d,_ in cnt.most_common(5)])
+        result.append([d for d, _ in cnt.most_common(5)])
     return result
 
-# === Generate 10 full 4D predictions ===
+# === Generate N full 4D predictions ===
 
-def generate_by_frequency(draws, recent_n=30, top_n=10):
+def generate_by_frequency(draws, recent_n=30, top_n=13):
     base = _frequency_base(draws, recent_n)
     combos = [''.join(p) for p in itertools.product(*base)]
     return combos[:top_n]
 
-def generate_by_polarity_shift(draws, recent_n=30, top_n=10):
+def generate_by_polarity_shift(draws, recent_n=30, top_n=13):
     base = _polarity_shift_base(draws, recent_n)
     combos = [''.join(p) for p in itertools.product(*base)]
     return combos[:top_n]
 
-def generate_by_hybrid(draws, recent_n=30, top_n=10):
+def generate_by_hybrid(draws, recent_n=30, top_n=13):
     base = _hybrid_base(draws, recent_n)
     combos = [''.join(p) for p in itertools.product(*base)]
     return combos[:top_n]
 
-def generate_by_break(draws, top_n=10):
+def generate_by_break(draws, top_n=13):
     base = _break_base()
     combos = [''.join(p) for p in itertools.product(*base)]
     return combos[:top_n]
 
-def generate_by_hitfq(draws, recent_n=30, top_n=10):
+def generate_by_hitfq(draws, recent_n=30, top_n=13):
     base = _hitfq_base(draws, recent_n)
     combos = [''.join(p) for p in itertools.product(*base)]
     return combos[:top_n]
 
-def generate_by_smartpattern(draws, top_n=10):
+def generate_by_smartpattern(draws, top_n=13):
     base = _smartpattern_base(draws)
     combos = [''.join(p) for p in itertools.product(*base)]
     return combos[:top_n]
