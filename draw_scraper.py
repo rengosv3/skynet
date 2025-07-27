@@ -1,26 +1,28 @@
 import requests
 from bs4 import BeautifulSoup
 
-def test_scrape(date_str):
+def get_10_numbers(date_str: str):
     url = f"https://gdlotto.net/results/ajax/_result.aspx?past=1&d={date_str}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    }
-    print(f"Testing date: {date_str}")
     try:
-        resp = requests.get(url, headers=headers, timeout=10)
-        print("Status:", resp.status_code)
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
         soup = BeautifulSoup(resp.text, "html.parser")
         spans = soup.find_all("span")
         numbers = []
         seen = set()
         for tag in spans:
-            txt = tag.text.strip()
-            if txt.isdigit() and len(txt) == 4 and txt not in seen:
-                numbers.append(txt)
-                seen.add(txt)
-        print("Jumpa nombor:", numbers)
-    except Exception as e:
-        print("❌ Ralat:", e)
+            text = tag.text.strip()
+            if text.isdigit() and len(text) == 4 and text not in seen:
+                seen.add(text)
+                numbers.append(text)
+            if len(numbers) == 10:
+                break
 
-test_scrape("2025-07-22")
+        if len(numbers) == 10:
+            print(f"✅ {date_str} → {numbers}")
+            return numbers
+        else:
+            print(f"❌ Gagal ambil nombor untuk {date_str} (jumpa {len(numbers)})")
+            return None
+    except Exception as e:
+        print(f"❌ Ralat {date_str}: {e}")
+        return None
