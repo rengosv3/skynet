@@ -19,7 +19,7 @@ st.markdown(f"⏳ Next draw in: `{str(get_draw_countdown_from_last_8pm()).split(
 
 # ── Tombol Update Draw ────────────────────────────────────────────────────────
 st.header("⚙️ Kemaskini Draw")
-n_days = st.slider("Bilangan hari untuk scrape:", 10, 60, 30)
+n_days = st.slider("Bilangan hari untuk scrape:", 10, 120, 60, 30)
 if st.button("📥 Update Draw Terkini"):
     msg = update_draws(n_days=n_days)
     st.success(msg)
@@ -59,7 +59,7 @@ with tabs[1]:
     recent_n = st.slider("Bilangan draw terkini untuk base:", 10, len(draws), 30)
 
     try:
-        preds = generate_predictions(draws, method=strat, recent_n=recent_n, top_n=13)
+        preds = generate_predictions(draws, strategy=strat, recent_n=recent_n, top_n=13)
         st.success("🔢 13 Nombor Ramalan:")
         st.code('\n'.join(preds), language='text')
     except Exception as e:
