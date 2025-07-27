@@ -16,7 +16,10 @@ def get_10_numbers(date_str: str):
                 numbers.append(text)
                 seen.add(text)
         print(f"📅 {date_str} → Jumpa {len(numbers)} nombor: {numbers}")
+        return numbers  # ← ini penting untuk sistem lain guna
     except Exception as e:
         print(f"❌ Error {date_str}: {e}")
-        
+        return None
+
+# Uji satu tarikh
 get_10_numbers("2025-07-22")
