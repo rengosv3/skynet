@@ -1,7 +1,7 @@
 import streamlit as st
+import pandas as pd
 from collections import Counter
 from utils import load_last_draw
-
 
 def show_insight_tab(draws):
     st.header("🔍 Insight Nombor Draw Terkini")
