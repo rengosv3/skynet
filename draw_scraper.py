@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_10_numbers(date_str: str):
+def get_13_numbers(date_str: str):
     url = f"https://gdlotto.net/results/ajax/_result.aspx?past=1&d={date_str}"
     try:
         resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
@@ -14,10 +14,10 @@ def get_10_numbers(date_str: str):
             if text.isdigit() and len(text) == 4 and text not in seen:
                 seen.add(text)
                 numbers.append(text)
-            if len(numbers) == 10:
+            if len(numbers) == 13:
                 break
 
-        if len(numbers) == 10:
+        if len(numbers) == 13:
             print(f"✅ {date_str} → {numbers}")
             return numbers
         else:
