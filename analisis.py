@@ -17,15 +17,15 @@ def analyse_number(draws, number):
     freq_pos = [Counter() for _ in range(4)]
     for draw in draws:
         for num in draw['numbers']:
-            for i, d in enumerate(num):
-                freq_pos[i][d] += 1
+            for idx, d in enumerate(num):
+                freq_pos[idx][d] += 1
 
     details = []
     score = 0
-    for i, d in enumerate(digits):
-        pos_freq = freq_pos[i]
+    for idx, d in enumerate(digits):
+        pos_freq = freq_pos[idx]
         rank = sorted(pos_freq.items(), key=lambda x: -x[1])
-        rank_dict = {digit: idx + 1 for idx, (digit, _) in enumerate(rank)}
+        rank_dict = {digit: rank_i + 1 for rank_i, (digit, _) in enumerate(rank)}
         r = rank_dict.get(d, None)
         fq = pos_freq.get(d, 0)
 
@@ -42,14 +42,14 @@ def analyse_number(draws, number):
             status = "❄️ Cool"
 
         details.append({
-            "Posisi": i+1,
+            "Posisi": idx+1,
             "Digit": d,
             "Kekerapan": fq,
             "Ranking": r if r else "-",
             "Status": status
         })
 
-    # Tambah bonus jika pernah kena
+    # Bonus jika pernah kena dalam 15 draw terakhir
     if last_hit is not None and last_hit <= 15:
         score += 2
 
@@ -62,14 +62,15 @@ def analyse_number(draws, number):
         "details": details
     }
 
-def show_analysis_tab(draws):
+def show_analisis_tab(draws):
+    """Paparkan tab Analisis nombor 4D (dipanggil dari gd4d.py)."""
     st.header("🧠 Analisis Nombor 4D")
 
     max_n = len(draws)
-    recent_n = st.slider("Bilangan draw terkini untuk analisis", 10, max_n, 30)
+    recent_n = st.slider("Bilangan draw terkini untuk analisis", 10, max_n, 30, key="analisis_n")
     recent_draws = draws[-recent_n:]
 
-    number = st.text_input("Masukkan nombor 4D untuk analisis (cth: 1234)", max_chars=4)
+    number = st.text_input("Masukkan nombor 4D untuk analisis (cth: 1234)", max_chars=4, key="analisis_input")
 
     if number:
         result = analyse_number(recent_draws, number)
@@ -80,7 +81,11 @@ def show_analysis_tab(draws):
         st.subheader(f"Hasil Analisis untuk: `{number}`")
         st.metric("Skor Pemarkahan", result["score"])
         st.metric("Syor", result["recommendation"])
-        st.metric("Draw terakhir muncul", f"{result['last_hit']} draw lalu" if result["last_hit"] is not None else "❌ Tidak Pernah Kena")
+        last_hit = result["last_hit"]
+        st.metric(
+            "Draw terakhir muncul",
+            f"{last_hit} draw lalu" if last_hit is not None else "❌ Tidak Pernah Kena"
+        )
 
         st.subheader("Butiran Per Posisi")
         st.table(pd.DataFrame(result["details"]))
