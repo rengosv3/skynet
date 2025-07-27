@@ -1,0 +1,18 @@
+GD4D/
+├── gd4d.py                       ← Fail utama Streamlit
+├── draw_scraper.py              ← Scrape 10 nombor dari 1st–Special
+├── prediction.py                ← Logik ramalan (hasilkan 10 nombor ramalan)
+├── strategies.py                ← Strategi untuk ramalan
+├── backtest.py                  ← Fungsi uji balik (backtest)
+├── digit_rank.py                ← Analisis kedudukan digit
+├── hit_frequency.py             ← Tab frekuensi digit
+├── last_hit.py                  ← Tab Last Hit
+├── analisis.py                  ← Tab analisis nombor tertentu
+├── insight.py                   ← Tab insight hasil draw terakhir
+├── utils.py                     ← Fungsi bantu (load file, countdown, dll)
+├── requirements.txt             ← Keperluan pip
+├── data/
+│   ├── draws.txt                ← Simpan semua draw (10 nombor per draw)
+│   ├── last_draw.txt            ← Simpan 10 nombor draw terakhir
+│   └── digit_rank_p1.txt        ← Simpanan digit ranking
+└── README.md                    ← Dokumentasi projek (optional)
