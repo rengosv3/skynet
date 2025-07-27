@@ -5,8 +5,7 @@ from utils import save_draws
 
 def get_10_numbers(date_str: str) -> list[str] | None:
     """
-    Scrape kesemua 10 nombor dari 1st hingga Special berdasarkan tarikh YYYY-MM-DD.
-    Pulangkan list of 10 nombor 4-digit atau None jika gagal.
+    Scrape semua nombor 4-digit unik untuk 1 draw, tak kisah ID apa.
     """
     url = f"https://gdlotto.net/results/ajax/_result.aspx?past=1&d={date_str}"
     try:
@@ -16,23 +15,25 @@ def get_10_numbers(date_str: str) -> list[str] | None:
             return None
 
         soup = BeautifulSoup(resp.text, "html.parser")
-        ids = ["1stPz", "2ndPz", "3rdPz", "SpPz1", "SpPz2", "SpPz3", "SpPz4", "SpPz5", "SpPz6", "SpPz7"]
+        spans = soup.find_all("span")
         numbers = []
-        for pid in ids:
-            tag = soup.find("span", id=pid)
-            num = tag.text.strip() if tag else ""
-            if num.isdigit() and len(num) == 4:
-                numbers.append(num)
+        seen = set()
+
+        for tag in spans:
+            text = tag.text.strip()
+            if text.isdigit() and len(text) == 4 and text not in seen:
+                numbers.append(text)
+                seen.add(text)
 
         if len(numbers) == 10:
-            print(f"✅ {date_str} - berjaya dapat 10 nombor")
+            print(f"✅ {date_str}: Lengkap 10 nombor.")
             return numbers
         else:
-            print(f"❌ {date_str} - hanya dapat {len(numbers)} nombor")
-            print(resp.text[:500])  # Cetak sebahagian HTML untuk debug
+            print(f"❌ {date_str}: Jumpa {len(numbers)} nombor.")
+            print(resp.text[:500])  # Debug HTML
 
     except Exception as e:
-        print(f"❌ Ralat untuk {date_str}: {e}")
+        print(f"❌ Ralat {date_str}: {e}")
     return None
 
 def generate_date_list(n_days=30):
