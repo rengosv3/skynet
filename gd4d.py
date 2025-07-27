@@ -17,12 +17,13 @@ st.set_page_config(page_title="GD4D Predictor", layout="wide")
 st.title("🔮 GD4D Predictor")
 st.markdown(f"⏳ Next draw in: `{str(get_draw_countdown_from_last_8pm()).split('.')[0]}`")
 
-# ── Tab untuk Update Draws ────────────────────────────────────────────────────
-with st.sidebar.expander("⚙️ Kemaskini Draw"):
-    n_days = st.slider("Bilangan hari untuk scrape:", 10, 60, 30)
-    if st.button("📥 Update Draw Terkini"):
-        msg = update_draws(n_days=n_days)
-        st.success(msg)
+# ── Tombol Update Draw ────────────────────────────────────────────────────────
+st.header("⚙️ Kemaskini Draw")
+n_days = st.slider("Bilangan hari untuk scrape:", 10, 60, 30)
+if st.button("📥 Update Draw Terkini"):
+    msg = update_draws(n_days=n_days)
+    st.success(msg)
+st.markdown("---")
 
 # ── Load Draws ────────────────────────────────────────────────────────────────
 draws = load_draws()
@@ -58,8 +59,8 @@ with tabs[1]:
     recent_n = st.slider("Bilangan draw terkini untuk base:", 10, len(draws), 30)
 
     try:
-        preds = generate_predictions(draws, method=strat, recent_n=recent_n, top_n=10)
-        st.success("🔟 10 Nombor Ramalan:")
+        preds = generate_predictions(draws, method=strat, recent_n=recent_n, top_n=13)
+        st.success("🔢 13 Nombor Ramalan:")
         st.code('\n'.join(preds), language='text')
     except Exception as e:
         st.error(f"❌ {e}")
